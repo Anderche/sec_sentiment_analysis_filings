@@ -217,6 +217,16 @@ def main():
     print(f"Positive: {sentiment_results['positive']}%")
     print(f"Neutral: {sentiment_results['neutral']}%")
     print(f"Negative: {sentiment_results['negative']}%")
+    
+    # Before the save operation
+    user_response = input("Do you want to save the file? (y/n): ").lower()
+    if user_response == 'y':
+        # Proceed with save operation
+        save_file()  # or whatever your save function/method is
+    elif user_response == 'n':
+        print("Save operation cancelled")
+    else:
+        print("Invalid input. Please enter 'y' or 'n'")
 
 if __name__ == "__main__":
     main()
