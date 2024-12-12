@@ -1,6 +1,12 @@
 # SEC Filing Sentiment Analyzer
 
-A Python script that performs sentiment analysis on SEC 10-K and 10-Q filings using FinBERT. Enter a stock ticker to analyze the sentiment of recent financial reports.
+The script helps fintech firms by automating sentiment analysis of SEC filings (10-K/10-Q) using FinBERT, a finance-specific language model. It converts unstructured filing text into quantifiable sentiment scores (positive/negative/neutral percentages), enabling firms to:
+
+1. Track sentiment trends across quarters/years
+2. Compare sentiment between companies
+3. Flag significant sentiment changes for further analysis
+4. Make data-driven investment decisions
+
 
 ## Overview
 
@@ -43,18 +49,6 @@ The script processes filings through several steps:
 4. Chunks text for processing through FinBERT
 5. Aggregates sentiment scores across chunks
 
-## Requirements
 
-- Python 3.9 or higher
-- ~4GB RAM recommended
-- Internet connection
-- ~1GB storage for models
 
-## Limitations
 
-- Subject to SEC EDGAR rate limits
-- Processing time varies with filing size
-- Limited to 10-K and 10-Q filings
-- Requires proper SEC API headers
-
-The tool provides detailed logging for troubleshooting and handles various edge cases like invalid tickers, missing filings, and network errors. 
