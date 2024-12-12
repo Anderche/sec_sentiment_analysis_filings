@@ -32,32 +32,30 @@ def analyze_entities(text: str) -> Dict[str, int]:
         return entity_counts
     return Counter()
 
-def plot_top_entities(entity_counts: Dict[str, int], filing_info: dict, n: int = 30):
+def plot_top_entities(entity_counts: Dict[str, int], filing_info: dict, ticker: str, n: int = 30):
     """Create histogram of top n most frequent entities."""
     # Get top n entities
     top_entities = dict(sorted(entity_counts.items(), key=lambda x: x[1], reverse=True)[:n])
     
-    # Create bar plot
     plt.figure(figsize=(15, 8))
     plt.bar(range(len(top_entities)), list(top_entities.values()))
     plt.xticks(range(len(top_entities)), list(top_entities.keys()), rotation=45, ha='right')
-    plt.title(f'Top {n} Most Frequent Named Entities\n{filing_info["form"]} filed on {filing_info["date"]}')
+    
+    # Update title to use filing info detail URL and ticker
+    filing_url = filing_info.get('detail_url', 'N/A')
+    plt.title(f'Top {n} Most Frequent Named Entities for {ticker.upper()}\n{filing_info["form"]} filed on {filing_info["date"]}\nSource: {filing_url}')
+    
     plt.xlabel('Entity')
     plt.ylabel('Frequency')
     plt.tight_layout()
     
-    # Add prompt to save the plot
-    save_plot = input("Would you like to save the plot? (y/n): ").lower().strip()
+    # Generate timestamp and default filename with ticker
+    timestamp = datetime.now().strftime("%d%b%Y")
+    default_filename = f"ner_plot_{ticker.upper()}_{filing_info['form']}_{timestamp}.png"
     
-    if save_plot == 'y':
-        # Generate timestamp in DDMMMYYYY format (e.g., 15Mar2024)
-        timestamp = datetime.now().strftime("%d%b%Y")
-        filename = f"ner_plot_{filing_info['form']}_{timestamp}.png"
-        plt.savefig(filename, bbox_inches='tight', dpi=300)
-        print(f"Plot saved as: {filename}")
-    else:
-        # Save the default entity_histogram.png
-        plt.savefig('entity_histogram.png')
+    # Save plot with more descriptive filename by default
+    plt.savefig(default_filename, bbox_inches='tight', dpi=300)
+    print(f"\nPlot saved as: {default_filename}")
     
     plt.close()
 
@@ -79,10 +77,11 @@ def main():
         print("No recent 10-X filings found")
         return
     
-    # Display filings
+    # Display filings with URLs
     print("\nRecent filings:")
     for idx, filing in enumerate(filings, 1):
         print(f"{idx}. {filing['form']} filed on {filing['date']}")
+        print(f"   URL: {filing['detail_url']}")
     
     # Get user selection
     while True:
@@ -109,9 +108,10 @@ def main():
     entity_counts = analyze_entities(text)
     
     # Plot results
-    plot_top_entities(entity_counts, selected_filing)
-    print("\nEntity histogram has been saved as 'entity_histogram.png'")
-    
+    save_plot = input("\nWould you like to save the entity histogram? (y/n): ").lower().strip()
+    if save_plot in ['y', 'yes']:
+        plot_top_entities(entity_counts, selected_filing, ticker)
+        print("\nEntity histogram has been saved as 'entity_histogram.png'")
     # Print top entities and their counts
     print("\nTop 30 most frequent entities:")
     for entity, count in sorted(entity_counts.items(), key=lambda x: x[1], reverse=True)[:30]:
