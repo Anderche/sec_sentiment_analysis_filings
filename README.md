@@ -17,6 +17,16 @@ This tool automates the process of analyzing sentiment in SEC filings by:
 - Performing sentiment analysis using FinBERT
 - Displaying sentiment scores as percentages
 
+## Named Entity Recognition
+
+The NER (Named Entity Recognition) processing includes all entity types that spaCy recognizes (like PERSON, ORG, GPE, DATE, etc.) except for three specific types that are explicitly excluded:
+
+- CARDINAL (numbers)
+- QUANTITY (measurements)
+- PERCENT (percentage values)
+
+This filtering happens in the `process_text()` function through the condition `if ent.label_ not in ['CARDINAL', 'QUANTITY', 'PERCENT']`.
+
 ## Setup Instructions
 
 1. Create a new conda environment:
