@@ -4,6 +4,7 @@ from collections import Counter
 from typing import List, Dict
 from main import get_company_cik, get_recent_filings, get_filing_text
 import logging
+from datetime import datetime
 
 # Set up logging
 logging.basicConfig(
@@ -31,7 +32,7 @@ def analyze_entities(text: str) -> Dict[str, int]:
         return entity_counts
     return Counter()
 
-def plot_top_entities(entity_counts: Dict[str, int], n: int = 30):
+def plot_top_entities(entity_counts: Dict[str, int], filing_info: dict, n: int = 30):
     """Create histogram of top n most frequent entities."""
     # Get top n entities
     top_entities = dict(sorted(entity_counts.items(), key=lambda x: x[1], reverse=True)[:n])
@@ -40,11 +41,24 @@ def plot_top_entities(entity_counts: Dict[str, int], n: int = 30):
     plt.figure(figsize=(15, 8))
     plt.bar(range(len(top_entities)), list(top_entities.values()))
     plt.xticks(range(len(top_entities)), list(top_entities.keys()), rotation=45, ha='right')
-    plt.title(f'Top {n} Most Frequent Named Entities')
+    plt.title(f'Top {n} Most Frequent Named Entities\n{filing_info["form"]} filed on {filing_info["date"]}')
     plt.xlabel('Entity')
     plt.ylabel('Frequency')
     plt.tight_layout()
-    plt.savefig('entity_histogram.png')
+    
+    # Add prompt to save the plot
+    save_plot = input("Would you like to save the plot? (y/n): ").lower().strip()
+    
+    if save_plot == 'y':
+        # Generate timestamp in DDMMMYYYY format (e.g., 15Mar2024)
+        timestamp = datetime.now().strftime("%d%b%Y")
+        filename = f"ner_plot_{filing_info['form']}_{timestamp}.png"
+        plt.savefig(filename, bbox_inches='tight', dpi=300)
+        print(f"Plot saved as: {filename}")
+    else:
+        # Save the default entity_histogram.png
+        plt.savefig('entity_histogram.png')
+    
     plt.close()
 
 def main():
@@ -95,7 +109,7 @@ def main():
     entity_counts = analyze_entities(text)
     
     # Plot results
-    plot_top_entities(entity_counts)
+    plot_top_entities(entity_counts, selected_filing)
     print("\nEntity histogram has been saved as 'entity_histogram.png'")
     
     # Print top entities and their counts

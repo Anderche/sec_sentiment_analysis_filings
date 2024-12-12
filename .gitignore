@@ -1,1 +1,9 @@
- 
+# NER plot outputs
+ner_plot_*.png 
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python 
