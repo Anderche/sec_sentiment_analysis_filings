@@ -80,8 +80,8 @@ def main():
     # Display filings with URLs
     print("\nRecent filings:")
     for idx, filing in enumerate(filings, 1):
-        print(f"{idx}. {filing['form']} filed on {filing['date']}")
-        print(f"   URL: {filing['detail_url']}")
+        print(f"{idx:2d}. {filing['form']} filed on {filing['date']}")
+        print(f"     URL: {filing['detail_url']}")
     
     # Get user selection
     while True:
@@ -111,8 +111,7 @@ def main():
     save_plot = input("\nWould you like to save the entity histogram? (y/n): ").lower().strip()
     if save_plot in ['y', 'yes']:
         plot_top_entities(entity_counts, selected_filing, ticker)
-        print("\nEntity histogram has been saved as 'entity_histogram.png'")
-    # Print top entities and their counts
+
     print("\nTop 30 most frequent entities:")
     for entity, count in sorted(entity_counts.items(), key=lambda x: x[1], reverse=True)[:30]:
         print(f"{entity}: {count}")
